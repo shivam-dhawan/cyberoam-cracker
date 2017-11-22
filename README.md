@@ -15,5 +15,6 @@ At the end of all the processing and waiting(sadly without internet access) you 
 - Set ending id. Marked.
 - Open your cyberoam login page.
 - <i>Thank Me Later ;)</i>
+- <b>NOTE: You need working internet when you first launch the script(It needs to download jQuery). So, after adding script in tampermonkey, make sure your internet is working and then open the login page. <br> Still not clear? Message me. </b>
 <br>
 <h5> <u>Disclaimer:</u> I am not responsible for anything bad (like getting suspended or debarred from college or maybe your friends and girlfriend leaving you for exceeding their cyberoam data. Who knows man?) happening to you due to this script. </h5>
